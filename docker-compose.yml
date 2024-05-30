@@ -1,0 +1,46 @@
+name: 'kindapi'
+services:
+  pgsql:
+    image: 'postgres:13'
+    container_name: kindapi_pgsql
+    ports:
+      - '${DB_PORT:-5432}:5432'
+    environment:
+      PGPASSWORD: '${DB_PASS:-secret}'
+      POSTGRES_DB: '${DB_NAME:-default}'
+      POSTGRES_USER: '${DB_USER?:err}'
+      POSTGRES_PASSWORD: '${DB_PASS:-secret}'
+    volumes:
+      - 'sailpgsql:/var/lib/postgresql/data'
+    networks:
+      - sail
+    healthcheck:
+      test:
+        [
+          'CMD',
+          'pg_isready',
+          '-q',
+          '-d',
+          '${DB_NAME:-default}',
+          '-U',
+          '${DB_USER}',
+        ]
+      retries: 3
+      timeout: 5s
+  mailhog:
+    image: 'mailhog/mailhog:latest'
+    container_name: kindapi_mailhog
+    ports:
+      - '${MAILHOG_PORT:-1025}:1025'
+      - '${MAILHOG_DASHBOARD_PORT:-8025}:8025'
+    networks:
+      - sail
+networks:
+  sail:
+    driver: bridge
+volumes:
+  sailpgsql:
+  sailredis:
+  sailmongo:
+  sailevolution_instances:
+  sailevolution_store:
