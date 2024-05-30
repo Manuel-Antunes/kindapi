@@ -5,7 +5,7 @@ import Link from "next/link";
 import { api } from "@/utils/api";
 
 export default function Home() {
-  const hello = api.post.hello.useQuery({ text: "from tRPC" });
+  const hello = api.post.hello.useQuery({ text: "Manuel Antunes" });
 
   return (
     <>
@@ -59,7 +59,7 @@ function AuthShowcase() {
   const { data: sessionData } = useSession();
 
   const { data: secretMessage } = api.post.getSecretMessage.useQuery(
-    undefined, // no input
+    {}, // no input
     { enabled: sessionData?.user !== undefined }
   );
 
